@@ -4,263 +4,551 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Grover's Algorithm Simulator</title>
+<title>Grover's Algorithm | Quantum Search Simulator</title>
+
 <style>
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
+
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f3f6fb;
-  color: #17243b;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f6fb;
+    color: #17243b;
 }
+
 header {
-  background: #142746;
-  color: white;
-  padding: 28px 20px;
-  text-align: center;
+    background: #142746;
+    color: white;
+    text-align: center;
+    padding: 28px 15px;
 }
-header p { color: #d2def1; }
-main { max-width: 1050px; margin: 24px auto; padding: 0 16px; }
+
+header h1 {
+    margin: 0 0 10px;
+    font-size: 30px;
+}
+
+header p {
+    color: #d5dfef;
+    margin: 0;
+}
+
+main {
+    max-width: 1050px;
+    margin: 25px auto;
+    padding: 0 16px;
+}
+
 .panel {
-  background: white;
-  padding: 22px;
-  margin-bottom: 18px;
-  border-radius: 14px;
-  box-shadow: 0 3px 14px #14274612;
+    background: white;
+    padding: 24px;
+    margin-bottom: 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(20, 39, 70, 0.07);
 }
+
+h2 {
+    font-size: 22px;
+    margin-top: 0;
+    margin-bottom: 22px;
+}
+
 .controls {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 18px;
 }
-label { display: block; font-weight: bold; margin-bottom: 9px; }
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 9px;
+}
+
 select, input, button {
-  width: 100%;
-  padding: 11px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 15px;
+    width: 100%;
+    padding: 11px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 15px;
 }
+
 button {
-  cursor: pointer;
-  border: none;
-  background: #315fe8;
-  color: white;
-  font-weight: bold;
+    background: #315fe8;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
 }
-button.secondary { background: #e8edf6; color: #17243b; }
-.actions { display: flex; gap: 12px; margin-top: 20px; }
+
+button:hover {
+    background: #2449bb;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.secondary {
+    background: #e8edf6;
+    color: #17243b;
+}
+
 .metrics {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
 }
-.metric { background: #edf3ff; padding: 18px; border-radius: 10px; }
-.metric strong { display: block; font-size: 25px; margin-top: 8px; }
-canvas { width: 100%; height: 330px; display: block; }
-.steps { line-height: 1.9; }
-.note { color: #52627a; font-size: 14px; line-height: 1.6; }
-footer { text-align: center; padding: 25px; color: #52627a; }
-@media(max-width: 500px) {
-  .actions { flex-direction: column; }
-  canvas { height: 280px; }
+
+.metric {
+    background: #edf3ff;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.metric span {
+    display: block;
+    color: #52627a;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.metric strong {
+    font-size: 27px;
+    overflow-wrap: anywhere;
+}
+
+.chart-container {
+    width: 100%;
+    height: 350px;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    margin-top: 12px;
+}
+
+.legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 3px;
+}
+
+.marked-dot {
+    background: #315fe8;
+}
+
+.other-dot {
+    background: #9bb5e9;
+}
+
+.result-message {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0f5ff;
+    border-radius: 9px;
+    line-height: 1.7;
+}
+
+.steps {
+    display: grid;
+    gap: 14px;
+}
+
+.step {
+    border-left: 4px solid #315fe8;
+    background: #f7f9fd;
+    padding: 15px;
+    border-radius: 5px;
+    line-height: 1.7;
+}
+
+.step strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.formula {
+    background: #edf3ff;
+    border-radius: 10px;
+    padding: 18px;
+    line-height: 1.9;
+    margin-top: 20px;
+    overflow-wrap: anywhere;
+}
+
+footer {
+    text-align: center;
+    padding: 24px;
+    color: #64748b;
+}
+
+@media (max-width: 500px) {
+    header h1 {
+        font-size: 24px;
+    }
+
+    .panel {
+        padding: 17px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
 }
 </style>
 </head>
+
 <body>
 
 <header>
-  <h1>Grover's Algorithm Simulator</h1>
-  <p>Explore quantum search, the oracle and amplitude amplification.</p>
+    <h1>Grover's Algorithm</h1>
+    <p>Quantum Search Simulator</p>
 </header>
 
 <main>
-  <section class="panel">
-    <h2>Simulation Controls</h2>
-    <div class="controls">
-      <div>
-        <label for="qubits">Number of qubits</label>
-        <select id="qubits">
-          <option value="1">1 qubit</option>
-          <option value="2" selected>2 qubits</option>
-          <option value="3">3 qubits</option>
-          <option value="4">4 qubits</option>
-          <option value="5">5 qubits</option>
-          <option value="6">6 qubits</option>
-        </select>
-      </div>
-      <div>
-        <label for="target">Marked target state</label>
-        <select id="target"></select>
-      </div>
-      <div>
-        <label for="iterations">Grover iterations: <span id="iterLabel">1</span></label>
-        <input id="iterations" type="range" min="0" max="10" value="1">
-      </div>
-    </div>
 
-    <div class="actions">
-      <button id="run">▶ Run Simulation</button>
-      <button id="reset" class="secondary">↻ Reset</button>
-    </div>
-    <p class="note">This is an ideal mathematical simulation, not a run on quantum hardware.</p>
-  </section>
+    <section class="panel">
+        <h2>Simulation Controls</h2>
 
-  <section class="panel">
-    <h2>Simulation Results</h2>
-    <div class="metrics">
-      <div class="metric">Target success probability<strong id="success">—</strong></div>
-      <div class="metric">Initial target probability<strong id="initial">—</strong></div>
-      <div class="metric">Most likely outcome<strong id="likely">—</strong></div>
-      <div class="metric">Search space size<strong id="space">—</strong></div>
-    </div>
-  </section>
+        <div class="controls">
+            <div>
+                <label for="qubits">Number of qubits</label>
+                <select id="qubits">
+                    <option value="1">1 qubit</option>
+                    <option value="2" selected>2 qubits</option>
+                    <option value="3">3 qubits</option>
+                    <option value="4">4 qubits</option>
+                    <option value="5">5 qubits</option>
+                    <option value="6">6 qubits</option>
+                </select>
+            </div>
 
-  <section class="panel">
-    <h2>State Measurement Probabilities</h2>
-    <canvas id="chart" aria-label="Measurement probabilities for every quantum state"></canvas>
-    <p class="note">The marked state is highlighted. Probabilities are calculated for the selected number of iterations.</p>
-  </section>
+            <div>
+                <label for="target">Marked target state</label>
+                <select id="target"></select>
+            </div>
 
-  <section class="panel">
-    <h2>How Grover's Algorithm Works</h2>
-    <div class="steps">
-      <b>1. Initialize:</b> Start with the state |0...0⟩.<br>
-      <b>2. Hadamard:</b> Create an equal superposition of all states.<br>
-      <b>3. Oracle:</b> Flip the marked state's amplitude sign.<br>
-      <b>4. Diffusion:</b> Reflect amplitudes about their mean.<br>
-      <b>5. Repeat:</b> Each Grover iteration amplifies the target probability until it approaches its maximum.
-    </div>
-    <p class="note" id="explanation"></p>
-  </section>
+            <div>
+                <label for="iterations">
+                    Grover iterations:
+                    <span id="iterationValue">1</span>
+                </label>
+                <input
+                    id="iterations"
+                    type="range"
+                    min="0"
+                    max="10"
+                    value="1"
+                >
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="runButton">Run Simulation</button>
+            <button id="resetButton" class="secondary">Reset</button>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Simulation Results</h2>
+
+        <div class="metrics">
+            <div class="metric">
+                <span>Target success probability</span>
+                <strong id="success">100.00%</strong>
+            </div>
+
+            <div class="metric">
+                <span>Initial target probability</span>
+                <strong id="initial">25.00%</strong>
+            </div>
+
+            <div class="metric">
+                <span>Most likely outcome</span>
+                <strong id="likely">|00⟩</strong>
+            </div>
+
+            <div class="metric">
+                <span>Search space size</span>
+                <strong id="space">4</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>State Measurement Probabilities</h2>
+
+        <div class="chart-container">
+            <canvas id="probabilityChart"></canvas>
+        </div>
+
+        <div class="legend">
+            <span>
+                <i class="dot marked-dot"></i>
+                Marked target
+            </span>
+            <span>
+                <i class="dot other-dot"></i>
+                Other states
+            </span>
+        </div>
+
+        <div class="result-message" id="resultMessage"></div>
+    </section>
+
+    <section class="panel">
+        <h2>How the Algorithm Works</h2>
+
+        <div class="steps">
+            <div class="step">
+                <strong>1 · Initialize</strong>
+                Start in the initial state |0...0⟩.
+            </div>
+
+            <div class="step">
+                <strong>2 · Hadamard</strong>
+                Create an equal superposition of all possible states.
+            </div>
+
+            <div class="step">
+                <strong>3 · Oracle</strong>
+                Flip the sign of the marked state's amplitude.
+            </div>
+
+            <div class="step">
+                <strong>4 · Diffusion</strong>
+                Invert amplitudes about their mean to amplify the marked state.
+            </div>
+
+            <div class="step">
+                <strong>5 · Repeat</strong>
+                Repeat the oracle and diffusion operations for each Grover iteration.
+            </div>
+        </div>
+
+        <div class="formula" id="calculation"></div>
+    </section>
+
 </main>
 
-<footer>Educational Quantum Computing Project</footer>
+<footer>
+    Grover's Algorithm | Interactive Quantum Computing Project
+</footer>
 
 <script>
-const qubits = document.getElementById("qubits");
-const target = document.getElementById("target");
-const iterations = document.getElementById("iterations");
-const iterLabel = document.getElementById("iterLabel");
-const canvas = document.getElementById("chart");
-let probabilities = [];
-let marked = "01";
+const qubitsInput = document.getElementById("qubits");
+const targetInput = document.getElementById("target");
+const iterationsInput = document.getElementById("iterations");
+const canvas = document.getElementById("probabilityChart");
 
-function updateTargets() {
-  const n = Number(qubits.value);
-  const count = 2 ** n;
-  target.innerHTML = "";
-  for (let i = 0; i < count; i++) {
-    const state = i.toString(2).padStart(n, "0");
-    const option = document.createElement("option");
-    option.value = state;
-    option.textContent = "|" + state + "⟩";
-    target.appendChild(option);
-  }
-  marked = target.value;
-  simulate();
+let results = [];
+
+function populateTargets() {
+    const n = Number(qubitsInput.value);
+    const N = 2 ** n;
+    const previousTarget = targetInput.value;
+
+    targetInput.innerHTML = "";
+
+    for (let i = 0; i < N; i++) {
+        const state = i.toString(2).padStart(n, "0");
+        const option = document.createElement("option");
+
+        option.value = state;
+        option.textContent = "|" + state + "⟩";
+
+        targetInput.appendChild(option);
+    }
+
+    if (previousTarget.length === n) {
+        targetInput.value = previousTarget;
+    }
+
+    updateSimulation();
 }
 
-function simulate() {
-  const n = Number(qubits.value);
-  const N = 2 ** n;
-  const r = Number(iterations.value);
-  marked = target.value;
-  iterLabel.textContent = r;
+function updateSimulation() {
+    const n = Number(qubitsInput.value);
+    const N = 2 ** n;
+    const r = Number(iterationsInput.value);
+    const marked = targetInput.value;
 
-  // Grover success probability for one marked state.
-  const theta = Math.asin(1 / Math.sqrt(N));
-  const pTarget = Math.sin((2 * r + 1) * theta) ** 2;
+    document.getElementById("iterationValue").textContent = r;
 
-  probabilities = [];
-  for (let i = 0; i < N; i++) {
-    const state = i.toString(2).padStart(n, "0");
-    probabilities.push({
-      state,
-      probability: state === marked ? pTarget : (1 - pTarget) / (N - 1)
-    });
-  }
+    // Grover amplitude amplification for one marked state.
+    const theta = Math.asin(1 / Math.sqrt(N));
+    const targetAmplitude = Math.sin((2 * r + 1) * theta);
+    const targetProbability = targetAmplitude ** 2;
 
-  document.getElementById("success").textContent =
-    (pTarget * 100).toFixed(2) + "%";
-  document.getElementById("initial").textContent =
-    (100 / N).toFixed(2) + "%";
-  document.getElementById("likely").textContent =
-    probabilities.reduce((a, b) =>
-      b.probability > a.probability ? b : a
-    ).state;
-  document.getElementById("space").textContent = N;
-  document.getElementById("explanation").textContent =
-    `With ${n} qubits there are ${N} possible states. After ${r} iteration(s), ` +
-    `the ideal target success probability is ${(pTarget * 100).toFixed(2)}%.`;
+    const otherAmplitude = (1 - 2 * targetProbability / N) /
+        Math.sqrt(N - 1);
 
-  drawChart();
+    // Calculate probability distribution.
+    results = [];
+
+    for (let i = 0; i < N; i++) {
+        const state = i.toString(2).padStart(n, "0");
+
+        results.push({
+            state: state,
+            amplitude: state === marked
+                ? targetAmplitude
+                : otherAmplitude,
+            probability: state === marked
+                ? targetProbability
+                : (1 - targetProbability) / (N - 1)
+        });
+    }
+
+    document.getElementById("success").textContent =
+        (targetProbability * 100).toFixed(2) + "%";
+
+    document.getElementById("initial").textContent =
+        (100 / N).toFixed(2) + "%";
+
+    const mostLikely = results.reduce((a, b) =>
+        b.probability > a.probability ? b : a
+    );
+
+    document.getElementById("likely").textContent =
+        "|" + mostLikely.state + "⟩";
+
+    document.getElementById("space").textContent = N;
+
+    document.getElementById("resultMessage").textContent =
+        `With ${n} qubit(s) (${N} possible states), after ${r} ` +
+        `Grover iteration(s), the marked state |${marked}⟩ has a ` +
+        `${(targetProbability * 100).toFixed(2)}% chance of being measured.`;
+
+    document.getElementById("calculation").innerHTML =
+        `Initial amplitudes: 1/√${N} ≈ ${(1 / Math.sqrt(N)).toFixed(4)} each.<br>` +
+        `Oracle flips the sign of the marked amplitude.<br>` +
+        `Grover amplitude after ${r} iteration(s): ` +
+        `sin((2 × ${r} + 1)θ) = ${targetAmplitude.toFixed(4)}, ` +
+        `where θ = sin⁻¹(1/√${N}).<br>` +
+        `Marked-state probability = |amplitude|² = ` +
+        `${(targetProbability * 100).toFixed(2)}%.`;
+
+    drawChart();
 }
 
 function drawChart() {
-  const ctx = canvas.getContext("2d");
-  const dpr = window.devicePixelRatio || 1;
-  const width = canvas.clientWidth;
-  const height = canvas.clientHeight;
-  canvas.width = width * dpr;
-  canvas.height = height * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.clearRect(0, 0, width, height);
+    const ctx = canvas.getContext("2d");
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const dpr = window.devicePixelRatio || 1;
 
-  const left = 48, right = 12, top = 20, bottom = 65;
-  const plotW = width - left - right;
-  const plotH = height - top - bottom;
-  const maxP = Math.max(0.1, ...probabilities.map(x => x.probability));
-  const barW = Math.max(1, plotW / probabilities.length * 0.72);
-  const slot = plotW / probabilities.length;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
 
-  ctx.font = "11px Arial";
-  ctx.textAlign = "right";
-  for (let j = 0; j <= 4; j++) {
-    const value = maxP * j / 4;
-    const y = top + plotH * (1 - j / 4);
-    ctx.strokeStyle = "#e1e7f0";
-    ctx.beginPath();
-    ctx.moveTo(left, y);
-    ctx.lineTo(width - right, y);
-    ctx.stroke();
-    ctx.fillStyle = "#52627a";
-    ctx.fillText((value * 100).toFixed(0) + "%", left - 7, y + 4);
-  }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
 
-  probabilities.forEach((item, i) => {
-    const bh = item.probability / maxP * plotH;
-    const x = left + i * slot + (slot - barW) / 2;
-    const y = top + plotH - bh;
-    ctx.fillStyle = item.state === marked ? "#315fe8" : "#9bb5e9";
-    ctx.fillRect(x, y, barW, bh);
+    const left = 52;
+    const right = 15;
+    const top = 20;
+    const bottom = 65;
 
-    if (probabilities.length <= 16 || i % 4 === 0) {
-      ctx.save();
-      ctx.translate(x + barW / 2, top + plotH + 14);
-      ctx.rotate(-Math.PI / 4);
-      ctx.textAlign = "right";
-      ctx.fillStyle = "#34445e";
-      ctx.fillText(item.state, 0, 0);
-      ctx.restore();
+    const plotWidth = width - left - right;
+    const plotHeight = height - top - bottom;
+
+    if (!results.length) return;
+
+    const maxP = Math.max(
+        0.1,
+        ...results.map(item => item.probability)
+    );
+
+    // Horizontal probability grid.
+    ctx.font = "11px Arial";
+    ctx.textAlign = "right";
+
+    for (let j = 0; j <= 4; j++) {
+        const y = top + plotHeight * (1 - j / 4);
+        const value = maxP * j / 4;
+
+        ctx.strokeStyle = "#e1e7f0";
+        ctx.beginPath();
+        ctx.moveTo(left, y);
+        ctx.lineTo(width - right, y);
+        ctx.stroke();
+
+        ctx.fillStyle = "#52627a";
+        ctx.fillText((value * 100).toFixed(0) + "%", left - 7, y + 4);
     }
-  });
-  ctx.fillStyle = "#52627a";
-  ctx.textAlign = "center";
-  ctx.fillText("Quantum state", left + plotW / 2, height - 5);
+
+    const slotWidth = plotWidth / results.length;
+    const barWidth = Math.max(1, slotWidth * 0.7);
+    const marked = targetInput.value;
+
+    results.forEach((item, i) => {
+        const barHeight = item.probability / maxP * plotHeight;
+        const x = left + i * slotWidth + (slotWidth - barWidth) / 2;
+        const y = top + plotHeight - barHeight;
+
+        ctx.fillStyle = item.state === marked ? "#315fe8" : "#9bb5e9";
+        ctx.fillRect(x, y, barWidth, barHeight);
+
+        if (results.length <= 16 || i % 4 === 0) {
+            ctx.save();
+            ctx.translate(x + barWidth / 2, top + plotHeight + 16);
+            ctx.rotate(-Math.PI / 4);
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#34445e";
+            ctx.fillText(item.state, 0, 0);
+            ctx.restore();
+        }
+    });
+
+    ctx.fillStyle = "#52627a";
+    ctx.textAlign = "center";
+    ctx.font = "12px Arial";
+    ctx.fillText("Quantum state", left + plotWidth / 2, height - 5);
 }
 
-qubits.addEventListener("change", updateTargets);
-target.addEventListener("change", simulate);
-iterations.addEventListener("input", simulate);
-document.getElementById("run").addEventListener("click", simulate);
-document.getElementById("reset").addEventListener("click", () => {
-  qubits.value = "2";
-  iterations.value = "1";
-  updateTargets();
+qubitsInput.addEventListener("change", populateTargets);
+targetInput.addEventListener("change", updateSimulation);
+iterationsInput.addEventListener("input", updateSimulation);
+
+document.getElementById("runButton").addEventListener("click", updateSimulation);
+
+document.getElementById("resetButton").addEventListener("click", () => {
+    qubitsInput.value = "2";
+    iterationsInput.value = "1";
+    targetInput.value = "00";
+    populateTargets();
 });
+
 window.addEventListener("resize", drawChart);
-updateTargets();
+
+populateTargets();
 </script>
+
 </body>
 </html>
